@@ -1,18 +1,18 @@
 ## pasos para crear este proyecto:
-- 1. create next app
-- 2. publish to github
+- 1.create next app
+- 2.publish to github
 
 ## create website layout
-- 1. create layout component
-- 2. add header
-- 3. add main section
-- 4. add footer
-- 5. add tailwind classes
+- 1.create layout component
+- 2.add header
+- 3.add main section
+- 4.add footer
+- 5.add tailwind classes
 
 ## list products
-- 1. add data.js
-- 2. add images
-- 3. render products
+- 1.add data.js
+- 2.add images
+- 3.render products
 
 ## create product details
 - 1.create product page
@@ -39,3 +39,7 @@
 ## handle changing cart items 
 - 1.add select box for quantity
 - 2.handle select box change
+
+## Save cart items 
+- 1.install js-cookie package
+- 2.save and retreive cart items in cookies

@@ -2,19 +2,24 @@ import Layout from "@/components/Layout";
 import { Store } from "@/utils/Store";
 import Link from "next/link";
 import React, { useContext } from "react";
-import Image from 'next/image';
+import Image from "next/image";
 import { useRouter } from "next/router";
-
+import dynamic from "next/dynamic";
+import { DeleteItems } from "@/components/globalIcons";
 
 const CartScreen = () => {
-const router = useRouter()                     
+  const router = useRouter();
   const { state, dispatch } = useContext(Store);
   const {
     cart: { cartItems },
   } = state;
-  const removeItemHandler = (item) =>{
-    dispatch({type: 'CART_REMOVE_ITEM',payload:item});
-  }
+  const removeItemHandler = (item) => {
+    dispatch({ type: "CART_REMOVE_ITEM", payload: item });
+  };
+  const updateCartHandler = (item, qty) => {
+    const quantity = Number(qty);
+    dispatch({ type: "CART_ADD_ITEM", payload: { ...item, quantity } });
+  };
   return (
     <Layout title="Shopping Cart">
       <h1 className="mb-4 text-xl">Shopping Cart</h1>
@@ -51,12 +56,25 @@ const router = useRouter()
                         </p>
                       </Link>
                     </td>
-                    <td className="p-5 text-right">{item.quantity}</td>
+                    <td className="p-5 text-right">
+                      <select
+                        value={item.quantity}
+                        onChange={(e) =>
+                          updateCartHandler(item, e.target.value)
+                        }
+                      >
+                        {[...Array(item.countInStock).keys()].map((x) => (
+                          <option key={x + 1} value={x + 1}>
+                            {x + 1}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
                     <td className="p-5 text-right">{item.price}</td>
                     <td className="p-5 text-center">
-                        <button onClick={() => removeItemHandler(item)}>
-                            <button className='h-5 w-5'>X</button>
-                        </button>
+                      <button onClick={() => removeItemHandler(item)}>
+                        <DeleteItems />
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -65,19 +83,21 @@ const router = useRouter()
           </div>
           <div className="card p-5">
             <ul>
-                <li>
-                    <div className="pb-3 text-xl">Subtotal
-                        ({cartItems.reduce((a,c) => a + c.quantity,0)})
-                        {' '}
-                        : €
-                        {cartItems.reduce((a,c) => a + c.quantity * c.price,0)}
-                    </div>
-                </li>
-                <li>
-                    <button onClick={() => router.push('/shipping')} className="primary-button w-full">Check out</button>
-                </li>
+              <li>
+                <div className="pb-3 text-xl">
+                  Subtotal ({cartItems.reduce((a, c) => a + c.quantity, 0)}) : €
+                  {cartItems.reduce((a, c) => a + c.quantity * c.price, 0)}
+                </div>
+              </li>
+              <li>
+                <button
+                  onClick={() => router.push("/shipping")}
+                  className="primary-button w-full"
+                >
+                  Check out
+                </button>
+              </li>
             </ul>
-
           </div>
         </div>
       )}
@@ -85,4 +105,4 @@ const router = useRouter()
   );
 };
 
-export default CartScreen;
+export default dynamic(() => Promise.resolve(CartScreen), { ssr: false });
