@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Image from 'next/image';
 import { useContext } from "react";
+import { AddToCart, Return } from "@/components/globalIcons";
+import styled from "styled-components";
 
 export default function ProductScreen() {
   const { state, dispatch } = useContext(Store);
@@ -34,11 +36,11 @@ export default function ProductScreen() {
   return (
     <Layout title={product.name}>
       <button className="py-2">
-        <Link href="/">⬅️ back to products</Link>
+        <Link href="/"><Return/></Link>
       </button>
 
       <div className="grid md:grid-cols-4 md:gap-3">
-        <div className="md:col-span-2">
+        <div className="md:col-span-2" >
           <Image
             src={product.image}
             alt={product.name}
@@ -47,19 +49,24 @@ export default function ProductScreen() {
             quality={100}
             width={640}
             height={640}
+            style={{border:45}}
           ></Image>
         </div>
         <div>
           <ul>
             <li>
-              <h1 className="text-lg">{product.name}</h1>
+              <NameProduct>{product.name}</NameProduct>
             </li>
-            <li>Category:{product.category}</li>
-            <li>Brand:{product.brand}</li>
+            
+            <CategoryProduct>Category: {product.category}</CategoryProduct>
+            <hr></hr>
+            <BrandProduct>Brand:{product.brand}</BrandProduct>
             <li>
+            <hr></hr>
               {product.rating} of {product.numReviews} Reviews
             </li>
-            <li>Description: {product.description}</li>
+            <hr></hr>
+            <DescriptionProduct>Description: {product.description}</DescriptionProduct>
           </ul>
         </div>
 
@@ -70,13 +77,28 @@ export default function ProductScreen() {
           </div>
           <div className="mb-2 flex justify-between">
             <div>Status</div>
-            <div>{product.countInStock > 0 ? "In Stock" : "Unavailable"}</div>
+            <div>{product.countInStock > 0 ? "In Stock ✅"  : "Unavailable ❌"}</div>
           </div>
-          <button className="primary-button w-full" onClick={addToCartHandler}>
-            Add To Cart
+          <button className="primary-button w-full" onClick={addToCartHandler} style={{borderRadius:50}} >
+            <AddToCart/>
           </button>
         </div>
       </div>
     </Layout>
   );
 }
+
+
+const NameProduct = styled.h1`
+font-size:2.5em;
+font-family:Arial;
+font-weight:bold;
+`
+const CategoryProduct = styled.li`
+font-size:1.2em ;
+`
+const BrandProduct = styled.li``
+
+const DescriptionProduct = styled.li`
+font-size: 1.2em;
+`
