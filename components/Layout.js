@@ -3,8 +3,13 @@ import Head from "next/head";
 import Link from "next/link";
 import React, { use, useContext, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
-import { useSession } from "next-auth/react";
-import 'react-toastify/dist/ReactToastify.css';
+import { signOut, useSession } from "next-auth/react";
+import "react-toastify/dist/ReactToastify.css";
+import { Menu } from "@headlessui/react";
+import DropdownLink from "./DropdownLink";
+import Cookies from "js-cookie";
+
+
 const Layout = ({ title, children }) => {
   const { status, data: session } = useSession();
 
@@ -15,6 +20,11 @@ const Layout = ({ title, children }) => {
     setCartItemsCount(cart.cartItems.reduce((a, c) => a + c.quantity, 0));
   }, [cart.cartItems]);
 
+  const logoutClickHandler = () =>{
+    Cookies.remove('cart');
+    dispatch({type: 'CART_RESET'})
+signOut({callbackUrl:'/login'})
+  }
   return (
     <>
       <Head>
@@ -54,11 +64,51 @@ const Layout = ({ title, children }) => {
               {status === "loading" ? (
                 "Loading"
               ) : session?.user ? (
-                 session.user.name
+                <Menu
+                  as="div"
+                  className="relative inline-block"
+                  style={{ listStyle: "none" }}
+                >
+                  <Menu.Button
+                    style={{ listStyle: "none" }}
+                    className="text-black-600"
+                  >
+                    {session.user.name}
+                    <Menu.Items className="absolute right-0 w-56 origin-top-right bg-white  shadow-lg ">
+                      <Menu.Item>
+                        <DropdownLink className="dropdown-link" href="/profile">
+                          Profile
+                        </DropdownLink>
+                      </Menu.Item>
+                      <Menu.Item>
+                        <DropdownLink
+                          className="dropdown-link"
+                          href="/order-history"
+                        >
+                          Order History
+                        </DropdownLink>
+                      </Menu.Item>
+                      {session.user.isAdmin && (
+                        <Menu.Item>
+                          <DropdownLink
+                            className="dropdown-link"
+                            href="/admin/dashboard"
+                          >
+                            Admin Dashboard
+                          </DropdownLink>
+                        </Menu.Item>
+                      )}
+                      <Menu.Item>
+                        <a className="dropdown-link" href="#"
+                        onClick={logoutClickHandler}>
+                          Logout
+                        </a>
+                      </Menu.Item>
+                    </Menu.Items>
+                  </Menu.Button>
+                </Menu>
               ) : (
-                <Link href="/login">
-                Login
-                </Link>
+                <Link href="/login">Login</Link>
               )}
             </div>
           </nav>
@@ -74,4 +124,3 @@ const Layout = ({ title, children }) => {
 };
 
 export default Layout;
-
