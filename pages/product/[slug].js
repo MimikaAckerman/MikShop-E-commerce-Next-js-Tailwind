@@ -80,7 +80,7 @@ export default function ProductScreen() {
             <div>{product.countInStock > 0 ? "In Stock ✅"  : "Unavailable ❌"}</div>
           </div>
           <button className="primary-button w-full" onClick={addToCartHandler} style={{borderRadius:50}} >
-            <AddToCart/>
+            Add To Cart
           </button>
         </div>
       </div>
