@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { IconAddToCart } from "./globalIcons";
 /* eslint-disable @next/next/no-img-element */
 export default function ProductItem({ product }) {
   return (
     <div className="card">
-      <Link href={`/product/${product.slug}`}>
+      
         <img
           src={product.image}
           alt={product.name}
@@ -13,7 +12,7 @@ export default function ProductItem({ product }) {
           quality={100}
           className="rounded shadow object-cover h-64 w-full"
         />
-      </Link>
+      
 
       <div className="flex flex-col items-center justify-center p-5">
         <Link href={`/product/${product.slug}`}>
@@ -21,9 +20,12 @@ export default function ProductItem({ product }) {
         </Link>
         <p className="mb-2">{product.brand}</p>
         <p>€{product.price}</p>
+        <Link href={`/product/${product.slug}`}>
         <button className="primary-button" type="button">
-          <IconAddToCart/>
+          Read More
         </button>
+        </Link>
+
       </div>
     </div>
   );
