@@ -4,8 +4,9 @@ import { createContext, useReducer } from "react";
 export const Store = createContext();
 
 const initialState = {
-  cart: Cookies.get('cart') ? JSON.parse(Cookies.get('cart')):
-  {cartItems : []}
+  cart: Cookies.get('cart') 
+  ? JSON.parse(Cookies.get('cart'))
+  :{cartItems : [],shippingAddress:{}}
 };
 function reducer(state, action) {
   switch (action.type) {
@@ -37,10 +38,28 @@ function reducer(state, action) {
         paymentMethod:'',
       },
     };
-    default:
-      return state;
+case 'CART_CLEAR_ITEMS':
+  return{...state,cart:{...state.cart,cartItems:[]}};
+
+case 'SAVE_SHIPPING_ADDRESS':
+  return{
+    ...state,
+    cart:{
+      ...state.cart,
+      shippingAddress:{
+        ...state.cart.shippingAddress,
+        ...action.payload
+      },
+    },
+  };
+default:
+  return state;
+
+
+
   }
 }
+
 export function StoreProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const value = { state, dispatch };
