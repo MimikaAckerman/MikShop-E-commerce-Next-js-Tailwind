@@ -1,6 +1,9 @@
 import Layout from "@/components/Layout";
 import ProductItem from "@/components/ProductItem";
 import data from "@/utils/data";
+import db from '../utils/db';
+import Product from '../models/Product';
+
 
 export default function Home() {
   return (
@@ -12,4 +15,16 @@ export default function Home() {
       </div>
     </Layout>
   );
+}
+
+export async function getServerSideProps(){
+  await db.connect();
+  const products = await Product.find().lean();
+
+  return{
+    props:{
+    
+      products: products.map(db.convertDocToObj)
+    }
+  }
 }
