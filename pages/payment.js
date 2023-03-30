@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 
+
 const PaymentScreen = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
   const router = useRouter()
@@ -71,3 +72,4 @@ const PaymentScreen = () => {
   );
 };
 export default PaymentScreen;
+
