@@ -95,3 +95,8 @@
 - 1.implement backend api for order details
 - 2.load order data from backend
 - 3.display order details
+
+## create register screen
+- 1.add signup api 
+- 2.create register page 
+- 3.call api on form submit
