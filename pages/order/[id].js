@@ -1,12 +1,10 @@
+import Layout from "@/components/Layout";
+import { getError } from "@/utils/error";
 import axios from "axios";
-
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useReducer } from "react";
-
-import Layout from "../../components/Layout";
-import { getError } from "../../utils/error";
 
 function reducer(state, action) {
   switch (action.type) {
@@ -20,6 +18,7 @@ function reducer(state, action) {
       state;
   }
 }
+
 function OrderScreen() {
   //order/:id
   const { query } = useRouter();
@@ -30,27 +29,29 @@ function OrderScreen() {
     order: {},
     error: "",
   });
-
   useEffect(() => {
     const fetchOrder = async () => {
       try {
         dispatch({ type: "FETCH_REQUEST" });
         const { data } = await axios.get(`/api/orders/${orderId}`);
         dispatch({ type: "FETCH_SUCCESS", payload: data });
-      } catch (error) {
-        dispatch({ type: "FETCH_FAIL", payload: getError(error) });
+      } catch (err) {
+        dispatch({ type: "FETCH_FAIL", payload: getError(err) });
       }
     };
     if (!order._id || (order._id && order._id !== orderId)) {
       fetchOrder();
     }
   }, [order, orderId]);
+
   const {
     shippingAddress,
     paymentMethod,
     orderItems,
     itemsPrice,
-
+    taxPrice,
+    shippingPrice,
+    totalPrice,
     isPaid,
     paidAt,
     isDelivered,
@@ -58,7 +59,7 @@ function OrderScreen() {
   } = order;
 
   return (
-    <Layout title={`Order ${orderId}`}>
+    <Layout title={`${orderId}`}>
       <h1 className="mb-4 text-xl">{`Order ${orderId}`}</h1>
       {loading ? (
         <div>Loading...</div>
@@ -67,7 +68,7 @@ function OrderScreen() {
       ) : (
         <div className="grid md:grid-cols-4 md:gap-5">
           <div className="overflow-x-auto md:col-span-3">
-            <div className="card  p-5">
+            <div className="card p-5">
               <h2 className="mb-2 text-lg">Shipping Address</h2>
               <div>
                 {shippingAddress.fullName}, {shippingAddress.address},{" "}
@@ -80,12 +81,11 @@ function OrderScreen() {
                 <div className="alert-error">Not delivered</div>
               )}
             </div>
-
             <div className="card p-5">
               <h2 className="mb-2 text-lg">Payment Method</h2>
               <div>{paymentMethod}</div>
               {isPaid ? (
-                <div className="alert-success">Paid at {paidAt}</div>
+                <div className="alert-success">Pait at {paidAt}</div>
               ) : (
                 <div className="alert-error">Not paid</div>
               )}
@@ -97,8 +97,8 @@ function OrderScreen() {
                 <thead className="border-b">
                   <tr>
                     <th className="px-5 text-left">Item</th>
-                    <th className="    p-5 text-right">Quantity</th>
-                    <th className="  p-5 text-right">Price</th>
+                    <th className="px-5 text-right">Quantity</th>
+                    <th className="px-5 text-right">Price</th>
                     <th className="p-5 text-right">Subtotal</th>
                   </tr>
                 </thead>
@@ -140,6 +140,24 @@ function OrderScreen() {
                     <div>${itemsPrice}</div>
                   </div>
                 </li>{" "}
+                <li>
+                  <div className="mb-2 flex justify-between">
+                    <div>Tax</div>
+                    <div>€{taxPrice}</div>
+                  </div>
+                </li>
+                <li>
+                  <div className="mb-2 flex-justify-between">
+                    <div>Shipping</div>
+                    <div>€{shippingPrice}</div>
+                  </div>
+                </li>
+                <li>
+                  <div className="mb-2 flex justify-between">
+                    <div>Total</div>
+                    <div>€{totalPrice}</div>
+                  </div>
+                </li>
               </ul>
             </div>
           </div>
