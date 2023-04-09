@@ -36,7 +36,7 @@ const PlaceOrderScreen = () => {
   const placeOrderHandler = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.post("/api/orders", {
+      const { data } = await axios.post("/api/order", {
         orderItems: cartItems,
         shippingAddress,
         paymentMethod,
@@ -54,7 +54,7 @@ const PlaceOrderScreen = () => {
           cartItems: [],
         })
       );
-      router.push(`/order/${data._id}`);
+      router.push(`/order/€{data._id}`);
     } catch (error) {
       setLoading(false);
       toast.error(getError(error));
@@ -106,7 +106,7 @@ const PlaceOrderScreen = () => {
                   {cartItems.map((item) => (
                     <tr key={item._id} className="border-b">
                       <td>
-                        <Link href={`/product/${item.slug}`}>
+                        <Link href={`/product/€{item.slug}`}>
                           <p className="flex items-center">
                             <Image
                               src={item.image}
@@ -120,9 +120,9 @@ const PlaceOrderScreen = () => {
                         </Link>
                       </td>
                       <td className=" p-5 text-right">{item.quantity}</td>
-                      <td className="p-5 text-right">${item.price}</td>
+                      <td className="p-5 text-right">€{item.price}</td>
                       <td className="p-5 text-right">
-                        ${item.quantity * item.price}
+                        €{item.quantity * item.price}
                       </td>
                     </tr>
                   ))}
@@ -140,25 +140,25 @@ const PlaceOrderScreen = () => {
                 <li>
                   <div className="mb-2 flex justify-between">
                     <div>Items</div>
-                    <div>${itemsPrice}</div>
+                    <div>€{itemsPrice}</div>
                   </div>
                 </li>
                 <li>
                   <div className="mb-2 flex justify-between">
                     <div>Tax</div>
-                    <div>${taxPrice}</div>
+                    <div>€{taxPrice}</div>
                   </div>
                 </li>
                 <li>
                   <div className="mb-2 flex justify-between">
                     <div>Shipping</div>
-                    <div>${shippingPrice}</div>
+                    <div>€{shippingPrice}</div>
                   </div>
                 </li>
                 <li>
                   <div className="mb-2 flex justify-between">
                     <div>Total</div>
-                    <div>${totalPrice}</div>
+                    <div>€{totalPrice}</div>
                   </div>
                 </li>
                 <li>
