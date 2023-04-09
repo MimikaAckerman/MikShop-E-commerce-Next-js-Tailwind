@@ -1,16 +1,16 @@
-import CheckoutWizard from "@/components/CheckoutWizard";
-import Layout from "@/components/Layout";
-import { getError } from "@/utils/error";
-import { Store } from "@/utils/Store";
-import axios from "axios";
-import Cookies from "js-cookie";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import axios from 'axios';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
+import React, { useContext, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import CheckoutWizard from '../components/CheckoutWizard';
+import Layout from '../components/Layout';
+import { getError } from '../utils/error';
+import { Store } from '../utils/Store';
 
-const PlaceOrderScreen = () => {
+export default function PlaceOrderScreen() {
   const { state, dispatch } = useContext(Store);
   const { cart } = state;
   const { cartItems, shippingAddress, paymentMethod } = cart;
@@ -18,8 +18,9 @@ const PlaceOrderScreen = () => {
   const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
 
   const itemsPrice = round2(
-    cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0)
-  );
+    cartItems.reduce((a, c) => a + c.quantity * c.price, 0)
+  ); // 123.4567 => 123.46
+
   const shippingPrice = itemsPrice > 200 ? 0 : 15;
   const taxPrice = round2(itemsPrice * 0.15);
   const totalPrice = round2(itemsPrice + shippingPrice + taxPrice);
@@ -27,7 +28,7 @@ const PlaceOrderScreen = () => {
   const router = useRouter();
   useEffect(() => {
     if (!paymentMethod) {
-      router.push("/payment");
+      router.push('/payment');
     }
   }, [paymentMethod, router]);
 
@@ -36,7 +37,7 @@ const PlaceOrderScreen = () => {
   const placeOrderHandler = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.post("/api/order", {
+      const { data } = await axios.post(`/api/orders`, {
         orderItems: cartItems,
         shippingAddress,
         paymentMethod,
@@ -46,18 +47,18 @@ const PlaceOrderScreen = () => {
         totalPrice,
       });
       setLoading(false);
-      dispatch({ type: "CART_CLEAR_ITEMS" });
+      dispatch({ type: 'CART_CLEAR_ITEMS' });
       Cookies.set(
-        "cart",
+        'cart',
         JSON.stringify({
           ...cart,
           cartItems: [],
         })
       );
-      router.push(`/order/€{data._id}`);
-    } catch (error) {
+      router.push(`/order/${data._id}`);
+    } catch (err) {
       setLoading(false);
-      toast.error(getError(error));
+      toast.error(getError(err));
     }
   };
 
@@ -75,15 +76,14 @@ const PlaceOrderScreen = () => {
             <div className="card  p-5">
               <h2 className="mb-2 text-lg">Shipping Address</h2>
               <div>
-                {shippingAddress.fullName}, {shippingAddress.address},{" "}
-                {shippingAddress.city}, {shippingAddress.postalCode},{" "}
+                {shippingAddress.fullName}, {shippingAddress.address},{' '}
+                {shippingAddress.city}, {shippingAddress.postalCode},{' '}
                 {shippingAddress.country}
               </div>
               <div>
                 <Link href="/shipping">Edit</Link>
               </div>
             </div>
-
             <div className="card  p-5">
               <h2 className="mb-2 text-lg">Payment Method</h2>
               <div>{paymentMethod}</div>
@@ -167,7 +167,7 @@ const PlaceOrderScreen = () => {
                     onClick={placeOrderHandler}
                     className="primary-button w-full"
                   >
-                    {loading ? "Loading..." : "Place Order"}
+                    {loading ? 'Loading...' : 'Place Order'}
                   </button>
                 </li>
               </ul>
@@ -177,6 +177,6 @@ const PlaceOrderScreen = () => {
       )}
     </Layout>
   );
-};
-export default PlaceOrderScreen;
+}
+
 PlaceOrderScreen.auth = true;

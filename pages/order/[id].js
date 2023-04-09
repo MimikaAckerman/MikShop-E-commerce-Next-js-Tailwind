@@ -33,7 +33,7 @@ function reducer(state, action) {
 }
 
 function OrderScreen() {
-  //order/:id
+  // order/:id
   const {
     query
   } = useRouter();
@@ -56,7 +56,7 @@ function OrderScreen() {
         });
         const {
           data
-        } = await axios.get(`/api/orders/€{orderId}`);
+        } = await axios.get(`/api/orders/${orderId}`);
         dispatch({
           type: "FETCH_SUCCESS",
           payload: data
@@ -68,6 +68,7 @@ function OrderScreen() {
         });
       }
     };
+
     if (!order._id || (order._id && order._id !== orderId)) {
       fetchOrder();
     }
@@ -87,9 +88,9 @@ function OrderScreen() {
     deliveredAt,
   } = order;
 
-  return ( <
-      Layout title = {
-        `€{orderId}`
+  return ( 
+    <Layout title = {
+        `${orderId}`
       } >
       <
       h1 className = "mb-4 text-xl" > {

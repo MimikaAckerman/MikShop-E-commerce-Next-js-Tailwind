@@ -17,14 +17,14 @@ export default function Home() {
   );
 }
 
-export async function getServerSideProps(){
+export async function getServerSideProps() {
   await db.connect();
   const products = await Product.find().lean();
-
-  return{
-    props:{
-  
-      products: products.map(db.convertDocToObj)
-    }
-  }
+  const featuredProducts = await Product.find({ isFeatured: true }).lean();
+  return {
+    props: {
+      featuredProducts: featuredProducts.map(db.convertDocToObj),
+      products: products.map(db.convertDocToObj),
+    },
+  };
 }
